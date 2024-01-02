@@ -1,0 +1,11 @@
+inc (int a) {
+    return (a + 1);
+}
+
+dec (int a){
+    return a - 1;
+}
+
+main () {
+    return inc(2);
+}
