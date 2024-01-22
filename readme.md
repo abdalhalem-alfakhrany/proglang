@@ -28,25 +28,36 @@ $ ./build/proglang <filename>.prog -ast_dump term
 ```
 
 ## Syntax Snapshot
+syntax is very close to c language
 
-Here's a sneak peek into ProgLang's syntax:
-
+##### function declaration
 ```c
-inc (int a) {
-    return a + 1;
-}
-
-dec (int a) {
-    return a - 1;
-}
-
-main () {
-    return inc(2);
+main() {
+    return 0;
 }
 ```
 
-This snippet provides a glimpse of the current state, with ongoing efforts to introduce new features. Naturally, it supports various binary operators (excluding ^).
+##### variable declaration
+```c
+int a = 10;
+
+main() {
+    int c = 20;
+}
+```
+assignment not implemented yet (i wonder why it must bet easy 😔)
+
+#### if else statement
+```c
+main() {
+    if (0) {
+        return 10;
+    } else {
+        return 9;
+    }
+}
+```
 
 It's important to note that numerous errors may surface during usage – expect the unexpected!
 
-I extend my gratitude to anyone willing to contribute. Experienced individuals, your insights and expertise would be immensely valuable in shaping the evolution of ProgLang. Let's collaborate and make this journey into programming language development even more enriching! 🤝
+I extend my gratitude to anyone willing to contribute. Experienced individuals, your insights and expertise would be immensely valuable in shaping the evolution of ProgLang. Let's collaborate and make this journey into programming language development even more enriching!
