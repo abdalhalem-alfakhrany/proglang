@@ -21,8 +21,8 @@ evaluation_t *eval_scope(scope_context_t *context, AST_scope_t *scope) {
     case AST_ASS:
       evaluation = eval_ass(context, stmt->ass);
       break;
-    case AST_IF_STMT:
-      evaluation = eval_if(context, stmt->if_stmt);
+    case AST_IF_ELSE_STMT:
+      evaluation = eval_if_else(context, stmt->if_else_stmt);
       break;
     case AST_RET:
       evaluation = eval_ret(context, stmt->ret);
@@ -152,9 +152,9 @@ evaluation_t *create_evaluation_ass() {
   return evaluation;
 }
 
-evaluation_t *create_evaluation_if() {
+evaluation_t *create_evaluation_if_else() {
   evaluation_t *evaluation = malloc(sizeof(evaluation_t));
-  evaluation->eval_type = EVAL_TYPE_IF;
+  evaluation->eval_type = EVAL_TYPE_IF_ELSE;
   return evaluation;
 }
 
@@ -221,12 +221,16 @@ evaluation_t *eval_ret(scope_context_t *context, AST_return_t *ret) {
   return create_evaluation_ret(eval_expr(context, ret->ret_expr));
 }
 
-evaluation_t *eval_if(scope_context_t *context, AST_if_stmt_t *if_stmt) {
-  int expr_eval = eval_expr(context, if_stmt->expr);
+evaluation_t *eval_if_else(scope_context_t *context,
+                           AST_if_else_stmt_t *if_else_stmt) {
+  int expr_eval = eval_expr(context, if_else_stmt->expr);
   if (expr_eval == 1) {
-    return eval_scope(context, if_stmt->scope);
+    return eval_scope(context, if_else_stmt->if_scope);
+  } else {
+    if (if_else_stmt->else_scope)
+      return eval_scope(context, if_else_stmt->else_scope);
   }
-  return create_evaluation_if();
+  return create_evaluation_if_else();
 }
 
 evaluation_t *eval_func_call(scope_context_t *context,
@@ -266,8 +270,8 @@ evaluation_t *eval_func_call(scope_context_t *context,
     case AST_RET:
       evaluation = eval_ret(func->context, stmt->ret);
       break;
-    case AST_IF_STMT:
-      evaluation = eval_if(func->context, stmt->if_stmt);
+    case AST_IF_ELSE_STMT:
+      evaluation = eval_if_else(func->context, stmt->if_else_stmt);
       break;
     default:
       printf("unknown  statement (evaluation)\n");

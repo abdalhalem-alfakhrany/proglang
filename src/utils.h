@@ -6,10 +6,11 @@
 
 #define EXPECT_ERROR(expected_token)                                           \
   if (!parser_expect(parser, expected_token, -1)) {                            \
-    fprintf(stderr, "%s:%d:%d: error: expect %s here\n\t| %s:%d\n",            \
+    fprintf(stderr, "%s:%d:%d: error: expect %s here but got %s\n\t| %s:%d\n", \
             "examples/control_statements.prog", parser->current_token->col,    \
             parser->current_token->row, token_type_to_str(expected_token),     \
-            __FILE__, __LINE__);                                               \
+            token_type_to_str(parser->current_token->token_type), __FILE__,    \
+            __LINE__);                                                         \
     exit(EXIT_FAILURE);                                                        \
   }
 

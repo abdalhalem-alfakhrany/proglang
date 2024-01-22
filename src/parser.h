@@ -33,6 +33,6 @@ AST_arg_t *parse_arg_ast(parser_t *parser);
 AST_func_decl_t *parse_func_decl_ast(parser_t *parser);
 AST_func_call_t *parse_func_call_ast(parser_t *parser);
 
-AST_scope_t *parse_if_scope_ast(parser_t *parser);
-AST_if_stmt_t *parse_if_stmt_ast(parser_t *parser);
+AST_scope_t *parse_ctrl_scope_ast(parser_t *parser);
+AST_if_else_stmt_t *parse_if_else_stmt_ast(parser_t *parser);
 #endif

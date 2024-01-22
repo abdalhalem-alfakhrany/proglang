@@ -69,6 +69,8 @@ token_t *lexer_next_token(lexer_t *lexer) {
       return create_token(TOKEN_IF, "if", 2, lexer->col, lexer->row);
     } else if (!strcmp(buff, "else")) {
       return create_token(TOKEN_ELSE, "else", 4, lexer->col, lexer->row);
+    } else if (!strcmp(buff, "return")) {
+      return create_token(TOKEN_RET, "return", 6, lexer->col, lexer->row);
     }
 
     return create_token(TOKEN_ID, buff, buff_size, lexer->col, lexer->row);

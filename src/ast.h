@@ -17,7 +17,7 @@ enum AST_TYPE_E {
   AST_EXPR_VAR,
   AST_EXPR_FUNC_CALL,
   AST_EXPR_BIN,
-  AST_IF_STMT,
+  AST_IF_ELSE_STMT,
   AST_RET,
   AST_UNKOWN,
 };
@@ -38,7 +38,7 @@ typedef struct AST_func_call AST_func_call_t;
 typedef struct AST_param AST_param_t;
 typedef struct AST_arg AST_arg_t;
 typedef struct AST_return AST_return_t;
-typedef struct AST_if_stmt AST_if_stmt_t;
+typedef struct AST_if_else_stmt AST_if_else_stmt_t;
 
 struct AST_statement {
   AST_TYPE ast_type;
@@ -49,7 +49,7 @@ struct AST_statement {
   AST_func_decl_t *func_decl;
   AST_func_call_t *func_call;
   AST_param_t *param;
-  AST_if_stmt_t *if_stmt;
+  AST_if_else_stmt_t *if_else_stmt;
   AST_arg_t *arg;
 };
 
@@ -106,10 +106,11 @@ struct AST_func_call {
   list_t *args;
 };
 
-struct AST_if_stmt {
+struct AST_if_else_stmt {
   AST_TYPE ast_type;
   AST_expr_t *expr;
-  AST_scope_t *scope;
+  AST_scope_t *if_scope;
+  AST_scope_t *else_scope;
 };
 
 AST_statement_t *create_ast_stmt(AST_TYPE ast_type, void *stmt);
@@ -137,7 +138,9 @@ AST_func_decl_t *create_ast_func_decl(token_t *id, list_t *params,
 
 AST_func_call_t *create_ast_func_call(token_t *id);
 
-AST_if_stmt_t *create_ast_if_stmt(AST_expr_t *expr, AST_scope_t *scope);
+AST_if_else_stmt_t *create_ast_if_else_stmt(AST_expr_t *expr,
+                                            AST_scope_t *if_scope,
+                                            AST_scope_t *else_scope);
 
 void free_ast_stmt(AST_statement_t *statement);
 void free_ast_scope(AST_scope_t *scope);
@@ -148,6 +151,6 @@ void free_ast_param(AST_param_t *param);
 void free_ast_arg(AST_arg_t *param);
 void free_ast_func_decl(AST_func_decl_t *func_decl);
 void free_ast_func_call(AST_func_call_t *func_decl);
-void free_if_stmt(AST_if_stmt_t *func_decl);
+void free_if_stmt(AST_if_else_stmt_t *func_decl);
 
 #endif

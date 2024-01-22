@@ -57,7 +57,6 @@ char *token_type_to_str(int type) {
   case TOKEN_ELSE:
     return "ELSE";
     break;
-    break;
   default:
     return "undefined type";
     break;

@@ -35,8 +35,8 @@ AST_statement_t *create_ast_stmt(AST_TYPE type, void *stmt) {
   case AST_FUNC_PARAM:
     statement->param = stmt;
     break;
-  case AST_IF_STMT:
-    statement->if_stmt = stmt;
+  case AST_IF_ELSE_STMT:
+    statement->if_else_stmt = stmt;
     break;
   default:
     break;
@@ -137,11 +137,14 @@ AST_func_call_t *create_ast_func_call(token_t *id) {
   return func_call;
 }
 
-AST_if_stmt_t *create_ast_if_stmt(AST_expr_t *expr, AST_scope_t *scope) {
-  AST_if_stmt_t *if_stmt = malloc(sizeof(AST_if_stmt_t));
-  if_stmt->ast_type = AST_IF_STMT;
+AST_if_else_stmt_t *create_ast_if_else_stmt(AST_expr_t *expr,
+                                            AST_scope_t *if_scope,
+                                            AST_scope_t *else_scope) {
+  AST_if_else_stmt_t *if_stmt = malloc(sizeof(AST_if_else_stmt_t));
+  if_stmt->ast_type = AST_IF_ELSE_STMT;
   if_stmt->expr = expr;
-  if_stmt->scope = scope;
+  if_stmt->if_scope = if_scope;
+  if_stmt->else_scope = else_scope;
   return if_stmt;
 }
 
@@ -251,8 +254,9 @@ void free_ast_func_call(AST_func_call_t *func_call) {
   free(func_call);
 }
 
-void free_if_stmt(AST_if_stmt_t *if_stmt) {
+void free_if_else_stmt(AST_if_else_stmt_t *if_stmt) {
   free_ast_expr(if_stmt->expr);
-  free_ast_scope(if_stmt->scope);
+  free_ast_scope(if_stmt->if_scope);
+  free_ast_scope(if_stmt->else_scope);
   free(if_stmt);
 }
