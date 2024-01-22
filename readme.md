@@ -63,9 +63,12 @@ assignment not implemented yet (i wonder why it must bet easy 😔)
 main() {
     if (0) {
         return 10;
-    } else {
+    } else if (1) {
         return 9;
+    } else {
+        return 99;
     }
+    return 84;
 }
 ```
 

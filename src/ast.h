@@ -109,6 +109,7 @@ struct AST_func_call {
 struct AST_if_else_stmt {
   AST_TYPE ast_type;
   AST_expr_t *expr;
+  AST_if_else_stmt_t *elseif;
   AST_scope_t *if_scope;
   AST_scope_t *else_scope;
 };
@@ -140,7 +141,8 @@ AST_func_call_t *create_ast_func_call(token_t *id);
 
 AST_if_else_stmt_t *create_ast_if_else_stmt(AST_expr_t *expr,
                                             AST_scope_t *if_scope,
-                                            AST_scope_t *else_scope);
+                                            AST_scope_t *else_scope,
+                                            AST_if_else_stmt_t *elseif);
 
 void free_ast_stmt(AST_statement_t *statement);
 void free_ast_scope(AST_scope_t *scope);

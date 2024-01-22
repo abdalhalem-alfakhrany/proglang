@@ -286,13 +286,14 @@ AST_if_else_stmt_t *parse_if_else_stmt_ast(parser_t *parser) {
   parser_advance(parser);
   AST_scope_t *if_scope = parse_ctrl_scope_ast(parser);
   AST_scope_t *else_scope = NULL;
+  AST_if_else_stmt_t *elseif = NULL;
   EXPECT_ERROR(TOKEN_RPRACE)
 
   parser_advance(parser);
   if (parser->current_token->token_type == TOKEN_ELSE) {
     parser_advance(parser);
     if (parser->current_token->token_type == TOKEN_IF) {
-      printf("else if not implemented yet\n");
+      elseif = parse_if_else_stmt_ast(parser);
     } else if (parser->current_token->token_type == TOKEN_LPRACE) {
       parser_advance(parser);
       else_scope = parse_ctrl_scope_ast(parser);
@@ -301,6 +302,6 @@ AST_if_else_stmt_t *parse_if_else_stmt_ast(parser_t *parser) {
   }
 
   AST_if_else_stmt_t *if_stmt =
-      create_ast_if_else_stmt(expr, if_scope, else_scope);
+      create_ast_if_else_stmt(expr, if_scope, else_scope, elseif);
   return if_stmt;
 }

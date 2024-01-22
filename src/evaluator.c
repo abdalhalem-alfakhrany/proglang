@@ -224,13 +224,19 @@ evaluation_t *eval_ret(scope_context_t *context, AST_return_t *ret) {
 evaluation_t *eval_if_else(scope_context_t *context,
                            AST_if_else_stmt_t *if_else_stmt) {
   int expr_eval = eval_expr(context, if_else_stmt->expr);
+
+  evaluation_t *eval = create_evaluation_if_else();
+
   if (expr_eval == 1) {
-    return eval_scope(context, if_else_stmt->if_scope);
+    eval = eval_scope(context, if_else_stmt->if_scope);
   } else {
+    if (if_else_stmt->elseif)
+      eval = eval_if_else(context, if_else_stmt->elseif);
+
     if (if_else_stmt->else_scope)
-      return eval_scope(context, if_else_stmt->else_scope);
+      eval = eval_scope(context, if_else_stmt->else_scope);
   }
-  return create_evaluation_if_else();
+  return eval;
 }
 
 evaluation_t *eval_func_call(scope_context_t *context,

@@ -139,12 +139,14 @@ AST_func_call_t *create_ast_func_call(token_t *id) {
 
 AST_if_else_stmt_t *create_ast_if_else_stmt(AST_expr_t *expr,
                                             AST_scope_t *if_scope,
-                                            AST_scope_t *else_scope) {
+                                            AST_scope_t *else_scope,
+                                            AST_if_else_stmt_t *elseif) {
   AST_if_else_stmt_t *if_stmt = malloc(sizeof(AST_if_else_stmt_t));
   if_stmt->ast_type = AST_IF_ELSE_STMT;
   if_stmt->expr = expr;
   if_stmt->if_scope = if_scope;
   if_stmt->else_scope = else_scope;
+  if_stmt->elseif = elseif;
   return if_stmt;
 }
 

@@ -1,7 +1,8 @@
 main () {
-    int a = 0 ;
-    if (a) {
+    if (0) {
         return 10;
+    } else if (0) {
+        return 15;
     }
     return 20;
 }
