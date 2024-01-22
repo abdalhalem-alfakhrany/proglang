@@ -37,6 +37,17 @@ main() {
 }
 ```
 
+#### function call
+```c
+inc(int x) {
+    return x+1;
+}
+
+main() {
+    return inc(1);
+}
+```
+
 ##### variable declaration
 ```c
 int a = 10;
