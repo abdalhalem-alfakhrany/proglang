@@ -12,6 +12,7 @@ struct lexer {
 };
 
 lexer_t *create_lexer(char *src, size_t src_length);
+void free_lexer(lexer_t *lexer);
 void lexer_trim_left(lexer_t *lexer);
 void lexer_advance(lexer_t *lexer);
 char lexer_current(lexer_t *lexer);

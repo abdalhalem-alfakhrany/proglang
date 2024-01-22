@@ -43,6 +43,7 @@ struct token {
 token_t *create_token_chr(TOKEN_TYPE type, char chr, int col, int row);
 token_t *create_token(TOKEN_TYPE type, char *text, int token_len, int col,
                       int row);
+void free_token(token_t *token);
 void print_token(token_t *token);
 void sprint_token(char *str, token_t *token);
 #endif

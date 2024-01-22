@@ -12,12 +12,17 @@ parser_t *create_parser(lexer_t *lexer) {
   return parser;
 }
 
+void free_parser(parser_t *parser) {
+  free(parser->lexer);
+  free(parser->current_token);
+  free(parser);
+}
+
 void parser_advance(parser_t *parser) {
   token_t *token = lexer_next_token(parser->lexer);
   if (token == NULL) {
     printf("end of file\n");
   }
-  parser->previous_token = parser->current_token;
   parser->current_token = token;
 }
 

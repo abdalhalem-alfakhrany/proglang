@@ -1,3 +1,6 @@
 .vscode/
 prog_lang.code-workspace
 test/
+callgrind*
+valgrind*
+leeks

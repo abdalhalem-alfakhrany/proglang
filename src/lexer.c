@@ -15,6 +15,11 @@ lexer_t *create_lexer(char *src, size_t src_length) {
   return lexer;
 }
 
+void free_lexer(lexer_t *lexer) {
+  free(lexer->src);
+  free(lexer);
+}
+
 void lexer_trim_left(lexer_t *lexer) {
   while (lexer_current(lexer) == ' ' || lexer_current(lexer) == '\n' ||
          lexer_current(lexer) == '\t') {

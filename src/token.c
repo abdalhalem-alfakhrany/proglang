@@ -86,6 +86,12 @@ token_t *create_token_chr(TOKEN_TYPE type, char chr, int col, int row) {
   return token;
 }
 
+void free_token(token_t *token) {
+  if (token->text != NULL)
+    free(token->text);
+  free(token);
+}
+
 int chr_to_token(char chr) {
   switch (chr) {
   case ' ':

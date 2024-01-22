@@ -64,10 +64,12 @@ AST_expr_t *create_ast_expr_num(int value) {
   AST_expr_t *expr = malloc(sizeof(AST_expr_t));
   expr->ast_type = AST_EXPR_NUM;
   expr->value = value;
+  expr->id = NULL;
   return expr;
 }
 AST_expr_t *create_ast_expr_bin(OP op_type, AST_expr_t *lhs, AST_expr_t *rhs) {
   AST_expr_t *expr = malloc(sizeof(AST_expr_t));
+  expr->id = NULL;
   expr->ast_type = AST_EXPR_BIN;
   expr->op_type = op_type;
   expr->lhs = lhs;
@@ -78,6 +80,7 @@ AST_expr_t *create_ast_expr_func_call(AST_func_call_t *func_call) {
   AST_expr_t *expr = malloc(sizeof(AST_expr_t));
   expr->ast_type = AST_EXPR_FUNC_CALL;
   expr->func_call = func_call;
+  expr->id = NULL;
   return expr;
 }
 
@@ -150,6 +153,51 @@ AST_if_else_stmt_t *create_ast_if_else_stmt(AST_expr_t *expr,
   return if_stmt;
 }
 
+void free_ast_scope(AST_scope_t *scope) {
+  node_t *current_stmt = scope->statements->head;
+  while (current_stmt) {
+    AST_statement_t *stmt = current_stmt->data;
+    switch (stmt->ast_type) {
+    case AST_ASS:
+      free_ast_ass(stmt->as.ass);
+      break;
+    case AST_EXPR_BIN:
+    case AST_EXPR_NUM:
+      free_ast_expr(stmt->as.expr);
+      break;
+    case AST_SCOPE:
+      free_ast_scope(stmt->as.scope);
+      break;
+    case AST_RET:
+      free_ast_return(stmt->as.ret);
+      break;
+    case AST_FUNC_DECL:
+      free_ast_func_decl(stmt->as.func_decl);
+      break;
+    case AST_FUNC_CALL:
+      free_ast_func_call(stmt->as.func_call);
+      break;
+    case AST_FUNC_ARG_ID:
+    case AST_FUNC_ARG_LIT:
+      free_ast_arg(stmt->as.arg);
+      break;
+    case AST_FUNC_PARAM:
+      free_ast_param(stmt->as.param);
+      break;
+    case AST_IF_ELSE_STMT:
+      free_ast_if_else_stmt(stmt->as.if_else_stmt);
+      break;
+    default:
+      printf("type %d unknown\n", stmt->ast_type);
+      exit(EXIT_FAILURE);
+      break;
+    }
+    current_stmt = current_stmt->next;
+  }
+  free_list(scope->statements);
+  free(scope);
+}
+
 void free_ast_stmt(AST_statement_t *statement) {
   if (statement == NULL) {
     return;
@@ -164,69 +212,44 @@ void free_ast_stmt(AST_statement_t *statement) {
   free(statement);
 }
 
-void free_ast_scope(AST_scope_t *scope) {
-  if (scope == NULL) {
-    return;
-  }
-
-  free_list(scope->statements);
-
-  free(scope);
-}
-
 void free_ast_ass(AST_assignment_t *assignment) {
-  if (assignment == NULL) {
-    return;
-  }
-
+  free_token(assignment->id);
   free_ast_expr(assignment->ass_expr);
   free(assignment);
 }
 
 void free_ast_expr(AST_expr_t *expr) {
-  if (expr == NULL) {
-    return;
-  }
+  if (expr->id != NULL)
+    free_token(expr->id);
 
-  free(expr->text);
-  free_ast_expr(expr->lhs);
-  free_ast_expr(expr->rhs);
+  if (expr->func_call != NULL)
+    free_ast_func_call(expr->func_call);
 
+  if (expr->lhs != NULL)
+    free_ast_expr(expr->lhs);
+
+  if (expr->rhs != NULL)
+    free_ast_expr(expr->rhs);
   free(expr);
 }
 
 void free_ast_return(AST_return_t *ret) {
-  if (ret == NULL) {
-    return;
-  }
-
   free_ast_expr(ret->ret_expr);
   free(ret);
 }
 
 void free_ast_param(AST_param_t *param) {
-  if (param == NULL) {
-    return;
-  }
-
-  free(param->id);
+  free_token(param->id);
   free(param);
 }
 
 void free_ast_arg(AST_arg_t *arg) {
-  if (arg == NULL) {
-    return;
-  }
-
   free(arg->id);
   free(arg);
 }
-void free_ast_func_decl(AST_func_decl_t *func_decl) {
-  if (func_decl == NULL) {
-    return;
-  }
 
-  free(func_decl->id);
+void free_ast_func_decl(AST_func_decl_t *func_decl) {
+  free_token(func_decl->id);
   node_t *current_param = func_decl->params->head;
   while (current_param != NULL) {
     AST_param_t *param = current_param->data;
@@ -234,15 +257,10 @@ void free_ast_func_decl(AST_func_decl_t *func_decl) {
     current_param = current_param->next;
   }
   free_ast_scope(func_decl->body);
-
   free(func_decl);
 }
 
 void free_ast_func_call(AST_func_call_t *func_call) {
-  if (func_call == NULL) {
-    return;
-  }
-
   free(func_call->id);
   node_t *current_arg = func_call->args->head;
   while (current_arg != NULL) {
@@ -256,9 +274,16 @@ void free_ast_func_call(AST_func_call_t *func_call) {
   free(func_call);
 }
 
-void free_if_else_stmt(AST_if_else_stmt_t *if_stmt) {
-  free_ast_expr(if_stmt->expr);
-  free_ast_scope(if_stmt->if_scope);
-  free_ast_scope(if_stmt->else_scope);
-  free(if_stmt);
+void free_ast_if_else_stmt(AST_if_else_stmt_t *if_else) {
+  free_ast_expr(if_else->expr);
+
+  free_ast_scope(if_else->if_scope);
+
+  if (if_else->else_scope)
+    free_ast_scope(if_else->else_scope);
+
+  if (if_else->elseif)
+    free_ast_if_else_stmt(if_else->elseif);
+
+  free(if_else);
 }

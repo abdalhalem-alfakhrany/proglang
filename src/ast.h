@@ -71,7 +71,6 @@ struct AST_expr {
   AST_TYPE ast_type;
   token_t *id;
   int value;
-  char *text;
   OP op_type;
   AST_func_call_t *func_call;
   AST_expr_t *lhs;
@@ -155,6 +154,6 @@ void free_ast_param(AST_param_t *param);
 void free_ast_arg(AST_arg_t *param);
 void free_ast_func_decl(AST_func_decl_t *func_decl);
 void free_ast_func_call(AST_func_call_t *func_decl);
-void free_if_stmt(AST_if_else_stmt_t *func_decl);
+void free_ast_if_else_stmt(AST_if_else_stmt_t *if_else);
 
 #endif

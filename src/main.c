@@ -30,42 +30,20 @@ int main(int argc, char **argv) {
   }
 
   lexer_t *lexer = create_lexer(src, src_length);
-  // if (argc >= 3) {
-  //   if (!strcmp(argv[2], "--dump_tokens")) {
-  //     token_t *current_token = lexer_next_token(lexer);
-  //     while (current_token->token_type != TOKEN_EOF) {
-  //       print_token(current_token);
-  //       current_token = lexer_next_token(lexer);
-  //     }
-  //     return 0;
-  //   }
-  // }
-
   parser_t *parser = create_parser(lexer);
-  scope_context_t *program_context = create_context(NULL);
-
+  // scope_context_t *program_context = create_context(NULL);
   AST_scope_t *program = parse_program_ast(parser);
 
-  if (argc > 3) {
-    if (!strcmp(argv[2], "-ast_dump")) {
-      if (!strcmp(argv[3], "graph")) {
-        FILE *out_file = fopen("build/tree.dot", "w");
-        print_ast_scope(out_file, program, 0, DUMP_TYPE_GRAPHVIZ);
-        fclose(out_file);
-      } else if (!strcmp(argv[3], "term")) {
-        print_ast_scope(stdout, program, 0, DUMP_TYPE_TERM);
-      }
-    }
-  }
+  // eval_scope(program_context, program);
 
-  eval_scope(program_context, program);
-
-  int error_code = eval_func_call(program_context,
-                                  create_ast_func_call(FAST_TOKEN_ID("main")))
-                       ->return_value;
-  printf("return is %d\n", error_code);
+  // int error_code = eval_func_call(program_context,
+  //                                 create_ast_func_call(FAST_TOKEN_ID("main")))
+  //                      ->return_value;
+  // printf("return is %d\n", error_code);
 
   free_ast_scope(program);
+  free_parser(parser);
+  free_lexer(lexer);
 
   return 0;
 }
