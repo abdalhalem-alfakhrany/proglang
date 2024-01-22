@@ -9,6 +9,7 @@ enum EVAL_TYPE_E {
   EVAL_SCOPE,
   EVAL_FUNC_CALL,
   EVAL_FUNC_DECL,
+  EVAL_TYPE_IF,
 };
 
 typedef struct var var_t;
@@ -59,6 +60,7 @@ void push_func(scope_context_t *context, func_t *func);
 
 evaluation_t *create_evaluation_ret(int value);
 evaluation_t *create_evaluation_ass();
+evaluation_t *create_evaluation_if();
 evaluation_t *create_evaluation_scope();
 
 evaluation_t *eval_ass(scope_context_t *context, AST_assignment_t *ass);
@@ -68,5 +70,6 @@ evaluation_t *eval_func_call(scope_context_t *context,
                              AST_func_call_t *func_call);
 int eval_expr(scope_context_t *context, AST_expr_t *expr);
 evaluation_t *eval_ret(scope_context_t *context, AST_return_t *ret);
+evaluation_t *eval_if(scope_context_t *context, AST_if_stmt_t *if_stmt);
 
 #endif

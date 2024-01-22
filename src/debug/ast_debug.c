@@ -46,6 +46,9 @@ int sprint_ast_scope(char *str, AST_scope_t *scope, int level, int margin,
         n += sprint_ast_scope(str + n, stmt->scope, level + 1, margin,
                               dump_type);
         break;
+      case AST_IF_STMT:
+        PRINT_TABS(level + 1)
+        printf("if statement \n");
       default:
         printf("unknown type %d\n", stmt->ast_type);
         break;

@@ -7,7 +7,7 @@
 #define EXPECT_ERROR(expected_token)                                           \
   if (!parser_expect(parser, expected_token, -1)) {                            \
     fprintf(stderr, "%s:%d:%d: error: expect %s here\n\t| %s:%d\n",            \
-            "examples/main.prog", parser->current_token->col,                  \
+            "examples/control_statements.prog", parser->current_token->col,    \
             parser->current_token->row, token_type_to_str(expected_token),     \
             __FILE__, __LINE__);                                               \
     exit(EXIT_FAILURE);                                                        \

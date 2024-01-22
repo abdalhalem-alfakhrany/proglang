@@ -6,6 +6,7 @@
 
 AST_statement_t *create_ast_stmt(AST_TYPE type, void *stmt) {
   AST_statement_t *statement = malloc(sizeof(AST_statement_t));
+  // TODO: there is some thing called union idiot
   statement->ast_type = type;
   switch (type) {
   case AST_ASS:
@@ -33,6 +34,9 @@ AST_statement_t *create_ast_stmt(AST_TYPE type, void *stmt) {
     break;
   case AST_FUNC_PARAM:
     statement->param = stmt;
+    break;
+  case AST_IF_STMT:
+    statement->if_stmt = stmt;
     break;
   default:
     break;
@@ -131,6 +135,14 @@ AST_func_call_t *create_ast_func_call(token_t *id) {
   func_call->args = create_list();
   func_call->id = id;
   return func_call;
+}
+
+AST_if_stmt_t *create_ast_if_stmt(AST_expr_t *expr, AST_scope_t *scope) {
+  AST_if_stmt_t *if_stmt = malloc(sizeof(AST_if_stmt_t));
+  if_stmt->ast_type = AST_IF_STMT;
+  if_stmt->expr = expr;
+  if_stmt->scope = scope;
+  return if_stmt;
 }
 
 void free_ast_stmt(AST_statement_t *statement) {
@@ -237,4 +249,10 @@ void free_ast_func_call(AST_func_call_t *func_call) {
   free_list(func_call->args);
 
   free(func_call);
+}
+
+void free_if_stmt(AST_if_stmt_t *if_stmt) {
+  free_ast_expr(if_stmt->expr);
+  free_ast_scope(if_stmt->scope);
+  free(if_stmt);
 }

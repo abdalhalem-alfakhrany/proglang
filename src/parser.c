@@ -19,7 +19,6 @@ void parser_advance(parser_t *parser) {
   }
   parser->previous_token = parser->current_token;
   parser->current_token = token;
-  print_token(token);
 }
 
 int parser_expect(parser_t *parser, ...) {
@@ -121,7 +120,6 @@ AST_scope_t *parse_program_ast(parser_t *parser) {
   AST_scope_t *scope = create_ast_scope();
   parser_advance(parser);
   while (!parser_expect(parser, TOKEN_EOF, -1)) {
-
     if (!strcmp("return", parser->current_token->text)) {
       AST_return_t *ret = parse_return_ast(parser);
       if (ret)
@@ -144,8 +142,10 @@ AST_scope_t *parse_func_body_ast(parser_t *parser) {
   AST_scope_t *scope = create_ast_scope();
   parser_advance(parser);
   while (!parser_expect(parser, TOKEN_RPRACE, TOKEN_EOF, -1)) {
-
-    if (is_type(parser->current_token->text) != ID_TYPE_UNKNOWN) {
+    if (parser->current_token->token_type == TOKEN_IF) {
+      AST_if_stmt_t *if_stmt = parse_if_stmt_ast(parser);
+      scope_push(scope, create_ast_stmt(if_stmt->ast_type, if_stmt));
+    } else if (is_type(parser->current_token->text) != ID_TYPE_UNKNOWN) {
       AST_assignment_t *ass = parse_assignment_ast(parser);
       if (ass)
         scope_push(scope, create_ast_stmt(ass->ast_type, ass));
@@ -161,7 +161,7 @@ AST_scope_t *parse_func_body_ast(parser_t *parser) {
       break;
     } else {
       scope_push(scope,
-                 create_ast_stmt(AST_FUNC_DECL, parse_func_call_ast(parser)));
+                 create_ast_stmt(AST_FUNC_CALL, parse_func_call_ast(parser)));
     }
     parser_advance(parser);
   }
@@ -257,4 +257,51 @@ AST_func_call_t *parse_func_call_ast(parser_t *parser) {
   AST_func_call_t *func_call = create_ast_func_call(id);
   func_call->args = args;
   return func_call;
+}
+
+AST_scope_t *parse_if_scope_ast(parser_t *parser) {
+  AST_scope_t *scope = create_ast_scope();
+  // parser_advance(parser);
+  while (!parser_expect(parser, TOKEN_RPRACE, TOKEN_EOF, -1)) {
+
+    if (is_type(parser->current_token->text) != ID_TYPE_UNKNOWN) {
+      AST_assignment_t *ass = parse_assignment_ast(parser);
+      if (ass)
+        scope_push(scope, create_ast_stmt(ass->ast_type, ass));
+    } else if (!strcmp("return", parser->current_token->text)) {
+      AST_return_t *ret = parse_return_ast(parser);
+      if (ret)
+        scope_push(scope, create_ast_stmt(ret->ast_type, ret));
+      parser_advance(parser);
+
+      if (!parser_expect(parser, TOKEN_RPRACE, -1)) {
+        fprintf(stderr, "%s:%d:%d: warning: this is unreachable here\n", LOC);
+      }
+      break;
+    } else {
+      scope_push(scope,
+                 create_ast_stmt(AST_IF_STMT, parse_func_call_ast(parser)));
+    }
+    parser_advance(parser);
+  }
+
+  return scope;
+}
+
+AST_if_stmt_t *parse_if_stmt_ast(parser_t *parser) {
+  EXPECT_ERROR(TOKEN_IF)
+  parser_advance(parser);
+  EXPECT_ERROR(TOKEN_LPAREN)
+  parser_advance(parser);
+  AST_expr_t *expr = parse_expr_ast(parser, 0);
+  EXPECT_ERROR(TOKEN_RPAREN)
+  parser_advance(parser);
+
+  EXPECT_ERROR(TOKEN_LPRACE)
+  parser_advance(parser);
+  AST_scope_t *scope = parse_if_scope_ast(parser);
+  EXPECT_ERROR(TOKEN_RPRACE)
+
+  AST_if_stmt_t *if_stmt = create_ast_if_stmt(expr, scope);
+  return if_stmt;
 }

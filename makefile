@@ -11,3 +11,6 @@ proglang:
 	
 proglang.debug:
 	gcc $(SRC) $(FLAGS) -DDEBUG -ggdb -o build/proglang
+
+test.lex:
+	gcc src/utils.c src/lexer.c src/token.c test/lexer.c -ggdb -o lex_test

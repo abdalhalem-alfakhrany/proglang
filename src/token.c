@@ -51,7 +51,13 @@ char *token_type_to_str(int type) {
   case TOKEN_EQUAL:
     return "=";
     break;
-
+  case TOKEN_IF:
+    return "IF";
+    break;
+  case TOKEN_ELSE:
+    return "ELSE";
+    break;
+    break;
   default:
     return "undefined type";
     break;
@@ -116,12 +122,9 @@ int chr_to_token(char chr) {
 }
 
 void print_token(token_t *token) {
-#ifdef LOG_TOKENS
   char buff[64];
   sprint_token(buff, token);
   printf("%s\n", buff);
-#endif
-  (void)(token);
 }
 
 void sprint_token(char *str, token_t *token) {

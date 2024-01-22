@@ -30,6 +30,17 @@ int main(int argc, char **argv) {
   }
 
   lexer_t *lexer = create_lexer(src, src_length);
+  // if (argc >= 3) {
+  //   if (!strcmp(argv[2], "--dump_tokens")) {
+  //     token_t *current_token = lexer_next_token(lexer);
+  //     while (current_token->token_type != TOKEN_EOF) {
+  //       print_token(current_token);
+  //       current_token = lexer_next_token(lexer);
+  //     }
+  //     return 0;
+  //   }
+  // }
+
   parser_t *parser = create_parser(lexer);
   scope_context_t *program_context = create_context(NULL);
 

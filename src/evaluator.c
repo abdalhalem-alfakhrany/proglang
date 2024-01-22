@@ -21,7 +21,14 @@ evaluation_t *eval_scope(scope_context_t *context, AST_scope_t *scope) {
     case AST_ASS:
       evaluation = eval_ass(context, stmt->ass);
       break;
+    case AST_IF_STMT:
+      evaluation = eval_if(context, stmt->if_stmt);
+      break;
+    case AST_RET:
+      evaluation = eval_ret(context, stmt->ret);
+      break;
     default:
+      printf("unknown statement (evaluation) %d\n", stmt->ast_type);
       break;
     }
     current_stmt = current_stmt->next;
@@ -145,6 +152,12 @@ evaluation_t *create_evaluation_ass() {
   return evaluation;
 }
 
+evaluation_t *create_evaluation_if() {
+  evaluation_t *evaluation = malloc(sizeof(evaluation_t));
+  evaluation->eval_type = EVAL_TYPE_IF;
+  return evaluation;
+}
+
 evaluation_t *create_evaluation_scope() {
   evaluation_t *evaluation = malloc(sizeof(evaluation_t));
   evaluation->eval_type = EVAL_SCOPE;
@@ -208,6 +221,14 @@ evaluation_t *eval_ret(scope_context_t *context, AST_return_t *ret) {
   return create_evaluation_ret(eval_expr(context, ret->ret_expr));
 }
 
+evaluation_t *eval_if(scope_context_t *context, AST_if_stmt_t *if_stmt) {
+  int expr_eval = eval_expr(context, if_stmt->expr);
+  if (expr_eval == 1) {
+    return eval_scope(context, if_stmt->scope);
+  }
+  return create_evaluation_if();
+}
+
 evaluation_t *eval_func_call(scope_context_t *context,
                              AST_func_call_t *func_call) {
 
@@ -224,7 +245,7 @@ evaluation_t *eval_func_call(scope_context_t *context,
 
     AST_arg_t *arg = current_arg->data;
     var_t *var = current_var->data;
-    
+
     var->value = arg->value;
 
     current_arg = current_arg->next;
@@ -245,9 +266,15 @@ evaluation_t *eval_func_call(scope_context_t *context,
     case AST_RET:
       evaluation = eval_ret(func->context, stmt->ret);
       break;
-
-    default:
+    case AST_IF_STMT:
+      evaluation = eval_if(func->context, stmt->if_stmt);
       break;
+    default:
+      printf("unknown  statement (evaluation)\n");
+      break;
+    }
+    if (evaluation->eval_type == EVAL_TYPE_RET) {
+      return evaluation;
     }
     current_stmt = current_stmt->next;
   }
