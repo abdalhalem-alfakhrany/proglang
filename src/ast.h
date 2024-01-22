@@ -42,15 +42,17 @@ typedef struct AST_if_else_stmt AST_if_else_stmt_t;
 
 struct AST_statement {
   AST_TYPE ast_type;
-  AST_expr_t *expr;
-  AST_assignment_t *ass;
-  AST_scope_t *scope;
-  AST_return_t *ret;
-  AST_func_decl_t *func_decl;
-  AST_func_call_t *func_call;
-  AST_param_t *param;
-  AST_if_else_stmt_t *if_else_stmt;
-  AST_arg_t *arg;
+  union {
+    AST_expr_t *expr;
+    AST_assignment_t *ass;
+    AST_scope_t *scope;
+    AST_return_t *ret;
+    AST_func_decl_t *func_decl;
+    AST_func_call_t *func_call;
+    AST_param_t *param;
+    AST_if_else_stmt_t *if_else_stmt;
+    AST_arg_t *arg;
+  } as;
 };
 
 struct AST_scope {

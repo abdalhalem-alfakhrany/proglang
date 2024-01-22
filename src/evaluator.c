@@ -13,19 +13,19 @@ evaluation_t *eval_scope(scope_context_t *context, AST_scope_t *scope) {
     AST_statement_t *stmt = (AST_statement_t *)current_stmt->data;
     switch (stmt->ast_type) {
     case AST_FUNC_DECL:
-      evaluation = eval_func_decl(context, stmt->func_decl);
+      evaluation = eval_func_decl(context, stmt->as.func_decl);
       break;
     case AST_FUNC_CALL:
-      evaluation = eval_func_call(context, stmt->func_call);
+      evaluation = eval_func_call(context, stmt->as.func_call);
       break;
     case AST_ASS:
-      evaluation = eval_ass(context, stmt->ass);
+      evaluation = eval_ass(context, stmt->as.ass);
       break;
     case AST_IF_ELSE_STMT:
-      evaluation = eval_if_else(context, stmt->if_else_stmt);
+      evaluation = eval_if_else(context, stmt->as.if_else_stmt);
       break;
     case AST_RET:
-      evaluation = eval_ret(context, stmt->ret);
+      evaluation = eval_ret(context, stmt->as.ret);
       break;
     default:
       printf("unknown statement (evaluation) %d\n", stmt->ast_type);
@@ -268,16 +268,16 @@ evaluation_t *eval_func_call(scope_context_t *context,
     AST_statement_t *stmt = current_stmt->data;
     switch (stmt->ast_type) {
     case AST_ASS:
-      evaluation = eval_ass(func->context, stmt->ass);
+      evaluation = eval_ass(func->context, stmt->as.ass);
       break;
     case AST_FUNC_CALL:
-      evaluation = eval_func_call(func->context, stmt->func_call);
+      evaluation = eval_func_call(func->context, stmt->as.func_call);
       break;
     case AST_RET:
-      evaluation = eval_ret(func->context, stmt->ret);
+      evaluation = eval_ret(func->context, stmt->as.ret);
       break;
     case AST_IF_ELSE_STMT:
-      evaluation = eval_if_else(func->context, stmt->if_else_stmt);
+      evaluation = eval_if_else(func->context, stmt->as.if_else_stmt);
       break;
     default:
       printf("unknown  statement (evaluation)\n");

@@ -6,37 +6,37 @@
 
 AST_statement_t *create_ast_stmt(AST_TYPE type, void *stmt) {
   AST_statement_t *statement = malloc(sizeof(AST_statement_t));
-  // TODO: there is some thing called union idiot
   statement->ast_type = type;
+
   switch (type) {
   case AST_ASS:
-    statement->ass = stmt;
+    statement->as.ass = stmt;
     break;
   case AST_EXPR_BIN:
   case AST_EXPR_NUM:
-    statement->expr = stmt;
+    statement->as.expr = stmt;
     break;
   case AST_SCOPE:
-    statement->scope = stmt;
+    statement->as.scope = stmt;
     break;
   case AST_RET:
-    statement->ret = stmt;
+    statement->as.ret = stmt;
     break;
   case AST_FUNC_DECL:
-    statement->func_decl = stmt;
+    statement->as.func_decl = stmt;
     break;
   case AST_FUNC_CALL:
-    statement->func_call = stmt;
+    statement->as.func_call = stmt;
     break;
   case AST_FUNC_ARG_ID:
   case AST_FUNC_ARG_LIT:
-    statement->arg = stmt;
+    statement->as.arg = stmt;
     break;
   case AST_FUNC_PARAM:
-    statement->param = stmt;
+    statement->as.param = stmt;
     break;
   case AST_IF_ELSE_STMT:
-    statement->if_else_stmt = stmt;
+    statement->as.if_else_stmt = stmt;
     break;
   default:
     break;
@@ -155,11 +155,11 @@ void free_ast_stmt(AST_statement_t *statement) {
     return;
   }
 
-  free_ast_expr(statement->expr);
-  free_ast_ass(statement->ass);
-  free_ast_scope(statement->scope);
-  free_ast_return(statement->ret);
-  free_ast_func_decl(statement->func_decl);
+  free_ast_expr(statement->as.expr);
+  free_ast_ass(statement->as.ass);
+  free_ast_scope(statement->as.scope);
+  free_ast_return(statement->as.ret);
+  free_ast_func_decl(statement->as.func_decl);
 
   free(statement);
 }

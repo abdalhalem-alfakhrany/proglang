@@ -23,27 +23,30 @@ int sprint_ast_scope(char *str, AST_scope_t *scope, int level, int margin,
 
       switch (stmt->ast_type) {
       case AST_ASS:
-        n += sprint_ast_ass(str + n, stmt->ass, level + 1, margin, dump_type);
+        n +=
+            sprint_ast_ass(str + n, stmt->as.ass, level + 1, margin, dump_type);
         break;
       case AST_EXPR_NUM:
       case AST_EXPR_VAR:
       case AST_EXPR_FUNC_CALL:
       case AST_EXPR_BIN:
-        n += sprint_ast_expr(str + n, stmt->expr, level + 1, margin, dump_type);
+        n += sprint_ast_expr(str + n, stmt->as.expr, level + 1, margin,
+                             dump_type);
         break;
       case AST_RET:
-        n += sprint_ast_ret(str + n, stmt->ret, level + 1, margin, dump_type);
+        n +=
+            sprint_ast_ret(str + n, stmt->as.ret, level + 1, margin, dump_type);
         break;
       case AST_FUNC_DECL:
-        n += sprint_ast_func_decl(str + n, stmt->func_decl, level + 1, margin,
-                                  dump_type);
+        n += sprint_ast_func_decl(str + n, stmt->as.func_decl, level + 1,
+                                  margin, dump_type);
         break;
       case AST_FUNC_CALL:
-        n += sprint_ast_func_call(str + n, stmt->func_call, level + 1, margin,
-                                  dump_type);
+        n += sprint_ast_func_call(str + n, stmt->as.func_call, level + 1,
+                                  margin, dump_type);
         break;
       case AST_SCOPE:
-        n += sprint_ast_scope(str + n, stmt->scope, level + 1, margin,
+        n += sprint_ast_scope(str + n, stmt->as.scope, level + 1, margin,
                               dump_type);
         break;
       case AST_IF_ELSE_STMT:
@@ -72,15 +75,15 @@ int sprint_ast_scope(char *str, AST_scope_t *scope, int level, int margin,
       AST_statement_t *stmt = (AST_statement_t *)current_stmt->data;
       switch (stmt->ast_type) {
       case AST_FUNC_DECL:
-        n += sprint_ast_func_decl(str + n, stmt->func_decl, level + 1, margin,
-                                  dump_type);
+        n += sprint_ast_func_decl(str + n, stmt->as.func_decl, level + 1,
+                                  margin, dump_type);
         break;
       case AST_FUNC_CALL:
-        n += sprint_ast_func_call(str + n, stmt->func_call, level + 1, margin,
-                                  dump_type);
+        n += sprint_ast_func_call(str + n, stmt->as.func_call, level + 1,
+                                  margin, dump_type);
         break;
       case AST_SCOPE:
-        n += sprint_ast_scope(str + n, stmt->scope, level + 1, margin,
+        n += sprint_ast_scope(str + n, stmt->as.scope, level + 1, margin,
                               dump_type);
         break;
       default:
@@ -335,11 +338,11 @@ int sprint_ast_func_decl(char *str, AST_func_decl_t *func_decl, int level,
       AST_statement_t *stmt = (AST_statement_t *)current_stmt->data;
       switch (stmt->ast_type) {
       case AST_RET:
-        n += sprint_ast_ret(str + n, stmt->ret, level, margin, dump_type);
+        n += sprint_ast_ret(str + n, stmt->as.ret, level, margin, dump_type);
         n += sprintf(str + n, "func_decl%d->ret%d;", func_decl_size, ret_size);
         break;
       case AST_ASS:
-        n += sprint_ast_ass(str + n, stmt->ass, level, margin, dump_type);
+        n += sprint_ast_ass(str + n, stmt->as.ass, level, margin, dump_type);
         n += sprintf(str + n, "func_decl%d->var%d;", func_decl_size, var_size);
         break;
       default:
