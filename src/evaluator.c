@@ -201,6 +201,7 @@ int eval_expr(scope_context_t *context, AST_expr_t *expr) {
       exit(1);
     }
   }
+  return -1;
 }
 
 evaluation_t *eval_ass(scope_context_t *context, AST_assignment_t *ass) {

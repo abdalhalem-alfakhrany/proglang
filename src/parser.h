@@ -4,7 +4,8 @@
 #include "lexer.h"
 #include "token.h"
 #define LOC                                                                    \
-  "examples/control_statements.prog", parser->current_token->col, parser->current_token->row
+  "examples/control_statements.prog", parser->current_token->col,              \
+      parser->current_token->row
 
 typedef struct parser parser_t;
 struct parser {
@@ -13,6 +14,7 @@ struct parser {
 };
 
 parser_t *create_parser(lexer_t *lexer);
+void free_parser(parser_t *parser);
 int parser_expect(parser_t *parser, ...);
 void parser_advance(parser_t *parser);
 

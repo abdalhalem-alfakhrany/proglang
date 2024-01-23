@@ -9,20 +9,16 @@
 parser_t *create_parser(lexer_t *lexer) {
   parser_t *parser = malloc(sizeof(parser_t));
   parser->lexer = lexer;
+  parser->current_token = NULL;
   return parser;
 }
 
-void free_parser(parser_t *parser) {
-  free(parser->lexer);
-  free(parser->current_token);
-  free(parser);
-}
+void free_parser(parser_t *parser) { free(parser); }
 
 void parser_advance(parser_t *parser) {
+  if (parser->current_token)
+    free_token(parser->current_token);
   token_t *token = lexer_next_token(parser->lexer);
-  if (token == NULL) {
-    printf("end of file\n");
-  }
   parser->current_token = token;
 }
 
@@ -127,7 +123,6 @@ AST_scope_t *parse_program_ast(parser_t *parser) {
   AST_scope_t *scope = create_ast_scope();
 
   parser_advance(parser);
-
   while (!parser_expect(parser, TOKEN_EOF, -1)) {
     if (parser->current_token->token_type == TOKEN_RET) {
       AST_return_t *ret = parse_return_ast(parser);
@@ -136,11 +131,13 @@ AST_scope_t *parse_program_ast(parser_t *parser) {
       AST_assignment_t *ass = parse_assignment_ast(parser);
       scope_push(scope, create_ast_stmt(ass->ast_type, ass));
     } else {
+      free_token(parser->current_token);
       scope_push(scope,
                  create_ast_stmt(AST_FUNC_DECL, parse_func_decl_ast(parser)));
       parser_advance(parser);
     }
   }
+  free_token(parser->current_token);
 
   return scope;
 }
@@ -206,7 +203,8 @@ AST_arg_t *parse_arg_ast(parser_t *parser) {
 AST_func_decl_t *parse_func_decl_ast(parser_t *parser) {
   AST_scope_t *body;
   list_t *params = create_list();
-  token_t *func_id = parser->current_token;
+  token_t *func_id = malloc(sizeof(token_t));
+  memcpy(parser->current_token, func_id, sizeof(token_t));
 
   parser_advance(parser);
   EXPECT_ERROR(TOKEN_LPAREN);
@@ -239,6 +237,7 @@ AST_func_call_t *parse_func_call_ast(parser_t *parser) {
   list_t *args = create_list();
   parser_advance(parser);
   if (parser->current_token->token_type != TOKEN_LPAREN) {
+    free_list(args);
     return NULL;
   }
   while (1) {
@@ -253,8 +252,7 @@ AST_func_call_t *parse_func_call_ast(parser_t *parser) {
   }
   parser_advance(parser);
 
-  AST_func_call_t *func_call = create_ast_func_call(id);
-  func_call->args = args;
+  AST_func_call_t *func_call = create_ast_func_call(id, args);
   return func_call;
 }
 

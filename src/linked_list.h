@@ -18,10 +18,11 @@ struct list {
 };
 
 node_t *create_node(void *data);
+void free_node(node_t *node);
 list_t *create_list();
+void free_list(list_t *list);
 void list_push(list_t *list, void *data);
 void print_list_forward(list_t *list);
 void print_list_backward(list_t *list);
-void free_list(list_t *list);
 
 #endif

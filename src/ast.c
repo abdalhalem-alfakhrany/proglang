@@ -1,6 +1,7 @@
 #include "ast.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "utils.h"
 
@@ -57,7 +58,8 @@ void scope_push(AST_scope_t *scope, AST_statement_t *stmt) {
 AST_expr_t *create_ast_expr_var(token_t *id) {
   AST_expr_t *expr = malloc(sizeof(AST_expr_t));
   expr->ast_type = AST_EXPR_VAR;
-  expr->id = id;
+  expr->id = malloc(sizeof(token_t));
+  memcpy(expr->id, id, sizeof(token_t));
   return expr;
 }
 AST_expr_t *create_ast_expr_num(int value) {
@@ -132,10 +134,10 @@ AST_func_decl_t *create_ast_func_decl(token_t *id, list_t *params,
   return func_decl;
 }
 
-AST_func_call_t *create_ast_func_call(token_t *id) {
+AST_func_call_t *create_ast_func_call(token_t *id, list_t *args) {
   AST_func_call_t *func_call = malloc(sizeof(AST_func_call_t));
   func_call->ast_type = AST_FUNC_CALL;
-  func_call->args = create_list();
+  func_call->args = args;
   func_call->id = id;
   return func_call;
 }
@@ -256,6 +258,7 @@ void free_ast_func_decl(AST_func_decl_t *func_decl) {
     free_ast_param(param);
     current_param = current_param->next;
   }
+  free_list(func_decl->params);
   free_ast_scope(func_decl->body);
   free(func_decl);
 }
@@ -268,9 +271,7 @@ void free_ast_func_call(AST_func_call_t *func_call) {
     free_ast_arg(arg);
     current_arg = current_arg->next;
   }
-
   free_list(func_call->args);
-
   free(func_call);
 }
 

@@ -2,7 +2,7 @@ SRC=src/main.c src/utils.c  \
 	src/lexer.c src/token.c \
  	src/parser.c src/linked_list.c \
   	src/ast.c src/stack.c	\
-	src/evaluator.c src/debug/ast_debug.c
+	src/evaluator.c 
 
 FLAGS=-Wall -Wextra -Wswitch
 

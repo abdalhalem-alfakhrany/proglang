@@ -15,10 +15,6 @@ node_t *create_node(void *data) {
 
 list_t *create_list() {
   list_t *list = (list_t *)malloc(sizeof(list_t));
-  if (list == NULL) {
-    fprintf(stderr, "Memory allocation failed.\n");
-    exit(EXIT_FAILURE);
-  }
   list->head = NULL;
   list->tail = NULL;
   list->items_size = 0;
@@ -56,13 +52,21 @@ void print_list_backward(list_t *list) {
   printf("NULL\n");
 }
 
+void free_node(node_t *node) {
+  free(node->data);
+  free(node->prev);
+  free(node->next);
+  free(node);
+}
+
 void free_list(list_t *list) {
   node_t *current = list->head;
-  node_t *next;
   while (current != NULL) {
-    next = current->next;
-    free(current);
-    current = next;
+    node_t *tmp = current->next;
+    free_node(current);
+    current = tmp;
+    free(tmp);
   }
+  free(current);
   free(list);
 }

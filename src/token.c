@@ -87,8 +87,7 @@ token_t *create_token_chr(TOKEN_TYPE type, char chr, int col, int row) {
 }
 
 void free_token(token_t *token) {
-  if (token->text != NULL)
-    free(token->text);
+  free(token->text);
   free(token);
 }
 

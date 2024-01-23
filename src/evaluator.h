@@ -68,8 +68,10 @@ evaluation_t *eval_func_decl(scope_context_t *context,
                              AST_func_decl_t *func_decl_ast);
 evaluation_t *eval_func_call(scope_context_t *context,
                              AST_func_call_t *func_call);
+int eval_term(scope_context_t *context, AST_term_t *term);
 int eval_expr(scope_context_t *context, AST_expr_t *expr);
 evaluation_t *eval_ret(scope_context_t *context, AST_return_t *ret);
-evaluation_t *eval_if_else(scope_context_t *context, AST_if_else_stmt_t *if_else_stmt);
+evaluation_t *eval_if_else(scope_context_t *context,
+                           AST_if_else_stmt_t *if_else_stmt);
 
 #endif

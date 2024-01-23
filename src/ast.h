@@ -33,6 +33,7 @@ typedef struct AST_statement AST_statement_t;
 typedef struct AST_scope AST_scope_t;
 typedef struct AST_assignment AST_assignment_t;
 typedef struct AST_expr AST_expr_t;
+typedef struct AST_term AST_term_t;
 typedef struct AST_func_decl AST_func_decl_t;
 typedef struct AST_func_call AST_func_call_t;
 typedef struct AST_param AST_param_t;
@@ -138,7 +139,7 @@ AST_arg_t *create_ast_arg_lit(int value);
 AST_func_decl_t *create_ast_func_decl(token_t *id, list_t *params,
                                       AST_scope_t *body);
 
-AST_func_call_t *create_ast_func_call(token_t *id);
+AST_func_call_t *create_ast_func_call(token_t *id, list_t *args);
 
 AST_if_else_stmt_t *create_ast_if_else_stmt(AST_expr_t *expr,
                                             AST_scope_t *if_scope,

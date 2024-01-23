@@ -45,7 +45,7 @@ char lexer_current(lexer_t *lexer) {
 
 token_t *lexer_next_token(lexer_t *lexer) {
   if (lexer->src_index >= lexer->src_length) {
-    return create_token(TOKEN_EOF, "", 0, lexer->col, lexer->row);
+    return create_token(TOKEN_EOF, NULL, 0, lexer->col, lexer->row);
   }
 
   static char buff[256];

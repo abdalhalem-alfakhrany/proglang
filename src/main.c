@@ -14,7 +14,7 @@
 #include "token.h"
 #include "utils.h"
 
-#include "debug/ast_debug.h"
+// #include "debug/ast_debug.h"
 
 int main(int argc, char **argv) {
   if (argc < 2) {
