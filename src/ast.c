@@ -264,7 +264,7 @@ void free_ast_func_decl(AST_func_decl_t *func_decl) {
 }
 
 void free_ast_func_call(AST_func_call_t *func_call) {
-  free(func_call->id);
+  // free(func_call->id);
   node_t *current_arg = func_call->args->head;
   while (current_arg != NULL) {
     AST_arg_t *arg = current_arg->data;

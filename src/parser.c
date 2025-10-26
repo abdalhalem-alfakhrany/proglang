@@ -4,22 +4,20 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "token.h"
 #include "utils.h"
 
 parser_t *create_parser(lexer_t *lexer) {
   parser_t *parser = malloc(sizeof(parser_t));
   parser->lexer = lexer;
-  parser->current_token = NULL;
+  parser->current_token = malloc(sizeof(token_t));
   return parser;
 }
 
 void free_parser(parser_t *parser) { free(parser); }
 
 void parser_advance(parser_t *parser) {
-  if (parser->current_token)
-    free_token(parser->current_token);
-  token_t *token = lexer_next_token(parser->lexer);
-  parser->current_token = token;
+  memcpy(parser->current_token, lexer_next_token(parser->lexer), sizeof(token_t));
 }
 
 int parser_expect(parser_t *parser, ...) {
@@ -131,14 +129,11 @@ AST_scope_t *parse_program_ast(parser_t *parser) {
       AST_assignment_t *ass = parse_assignment_ast(parser);
       scope_push(scope, create_ast_stmt(ass->ast_type, ass));
     } else {
-      free_token(parser->current_token);
       scope_push(scope,
                  create_ast_stmt(AST_FUNC_DECL, parse_func_decl_ast(parser)));
       parser_advance(parser);
     }
   }
-  free_token(parser->current_token);
-
   return scope;
 }
 
@@ -204,7 +199,7 @@ AST_func_decl_t *parse_func_decl_ast(parser_t *parser) {
   AST_scope_t *body;
   list_t *params = create_list();
   token_t *func_id = malloc(sizeof(token_t));
-  memcpy(parser->current_token, func_id, sizeof(token_t));
+  memcpy(func_id, parser->current_token, sizeof(token_t));
 
   parser_advance(parser);
   EXPECT_ERROR(TOKEN_LPAREN);

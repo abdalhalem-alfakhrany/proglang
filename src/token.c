@@ -67,7 +67,7 @@ token_t *create_token(TOKEN_TYPE type, char *text, int token_len, int col,
                       int row) {
   token_t *token = malloc(sizeof(token_t));
   token->token_type = type;
-  token->text = malloc(sizeof(char) * token_len);
+  token->text = malloc(sizeof(char) * token_len+1);
   strncpy(token->text, text, token_len);
   token->text[token_len] = '\0';
   token->row = row;
